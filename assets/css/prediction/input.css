@@ -1,0 +1,31 @@
+#import-core {
+}
+
+#import-core a {
+  float: right;
+  margin-top: -2.1rem;
+  color: #212529;
+  font-size: 1.1rem;
+}
+
+#grid {
+  width: 100% !important;
+}
+
+#dropzone {
+  border: dashed 2px #eee;
+  padding: 1rem 2rem;
+  background: #f9f9f9;
+}
+
+#chart-core {
+  margin-top: 1rem;
+}
+
+#table-core {
+  margin-top: 1rem;
+}
+
+button.btn-space {
+  margin-left: 1em;
+}

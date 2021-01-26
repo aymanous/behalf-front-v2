@@ -1,0 +1,51 @@
+#output {
+    height: 100vh;
+
+}
+
+#init-view {
+  margin: auto auto;
+  text-align: center;
+}
+
+#loading-view {
+  background: #fbfbfb;
+  margin: 0 auto;
+  text-align: center;
+}
+
+#error-view {
+  background: #ffffff;
+  margin: 0 auto;
+  text-align: center;
+}
+
+#output-view {
+}
+
+#output .content {
+}
+
+#output .content img {
+  width: 14rem;
+}
+
+#output .content h3 {
+  margin-bottom: 0.5rem;
+}
+
+#output #loading-view .content img {
+  margin-bottom: -2.5rem;
+}
+
+#output #error-view .content img {
+  margin-top: 2.5rem;
+}
+
+#logs-modal .modal-body p {
+  font-size: 1rem;
+}
+
+#logs-modal .modal-body hr {
+  margin: 0.5rem 0;
+}

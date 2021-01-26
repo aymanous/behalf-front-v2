@@ -1,0 +1,70 @@
+/* Fonts */
+
+@font-face {
+  font-family: "Didact Gothic";
+  src: url("../fonts/DidactGothic-Regular.ttf");
+}
+
+/* View */
+
+body {
+  font-family: "Didact Gothic";
+  background: #ffffff;
+  font-size: 1.1rem;
+}
+
+#page {
+}
+
+/* Header */
+
+#header {
+  padding: 0.7rem 0;
+  background: #214c7f;
+}
+
+#header h4 {
+  text-transform: uppercase;
+  color: #fff;
+}
+
+#logo {
+  display: flex;
+}
+
+#logo img {
+  width: 28px;
+  margin-right: 0.6rem;
+}
+
+/* Core */
+
+#core {
+  margin-top: 1rem;
+  padding: 0;
+  margin-bottom: 2rem;
+}
+
+#core-title {
+  margin-bottom: 0;
+  line-height: 2.4rem;
+}
+
+#core-content {
+  margin-top: 1.5rem;
+}
+
+/* Control */
+
+.buttons-horizontal {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.buttons-horizontal button {
+  margin-left: 5px;
+  padding: 0.4rem 1rem;
+}
+
+/* ----------------------------------------------------------- */
+/* Generic */
