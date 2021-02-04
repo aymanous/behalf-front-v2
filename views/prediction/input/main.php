@@ -1,8 +1,14 @@
 <link rel="stylesheet" href="assets/css/prediction/input.css" />
-<link rel="stylesheet" href="assets/libraries/SheetJS/alertify.css" type="text/css" />
 
 <div class="header">
-    <h4>Données d'entrée</h4>
+    <div class="row">
+        <div class="col-lg-6">
+            <h4>Données d'entrée</h4>
+        </div>
+        <div class="col-lg-6 text-right">
+            <a href="data/assets/entries_format_reference.csv">Télécharger le format de référence</a>
+        </div>
+    </div>
 </div>
 
 <div id="import-core">
@@ -21,25 +27,30 @@
 <script src="assets/libraries/SheetJS/xlsx.full.min.js"></script>
 <script src="assets/libraries/SheetJS/dropsheet.js"></script>
 <script src="assets/libraries/SheetJS/spin.js"></script>
-
 <script>
-    /** drop target **/
-    var _target = document.getElementById("drop");
-    var _file = document.getElementById("file");
+    let input = {
+        data: {}
+    };
 
-    /** Spinner **/
+    var _target = document.getElementById("dropzone");
+    var _file = document.getElementById("file");
     var spinner;
 
     var _onsheet = function(data, sheetnames, select_sheet_cb) {
+        input.data = data;
 
-        // let columns = data.shift();
         initInputChart(data);
         initInputTable(data);
+
+        resetImport();
+        resetOutput();
+        enableLaunchPrediction();
     };
 
     var _workstart = function() {
         spinner = new Spinner().spin(_target);
     };
+
     var _workend = function() {
         spinner.stop();
     };
@@ -94,4 +105,28 @@
             foo: "bar",
         },
     });
+
+
+    function updateInputData(data, source) {
+        input.data = data;
+
+        switch (source) {
+            case "chart":
+                updateInputTable(input.data);
+                break;
+
+            case "table":
+                // updateInputChart(input.data);
+                break;
+
+            default:
+                updateInputTable(input.data);
+                updateInputChart(input.data);
+        }
+    }
+
+    function resetInput() {
+        resetInputTable();
+        resetInputChart();
+    }
 </script>

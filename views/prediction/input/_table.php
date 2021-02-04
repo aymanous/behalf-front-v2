@@ -6,12 +6,10 @@
 <div id="grid"></div>
 
 <script>
-    let table;
-
     function initInputTable(data) {
-        $("#grid").empty();
+        resetInputTable();
 
-        table = jexcel(document.getElementById("grid"), {
+        input.table = jexcel(document.getElementById("grid"), {
             tableOverflow: false,
             lazyLoading: false,
             loadingSpin: true,
@@ -33,8 +31,29 @@
                 decimal: '.',
                 readOnly: false,
             }, ],
-
-
+            onchange: function() {
+                updateInputData(getInputTableData(), "table");
+            },
         });
+    }
+
+    function getInputTableData() {
+        let times = input.table.getColumnData(0);
+        let values = input.table.getColumnData(1);
+
+        return $(values).map(function(i) {
+            return {
+                time: parseFloat(times[i]),
+                value: parseFloat(values[i])
+            };
+        }).get();
+    }
+
+    function updateInputTable(data) {
+        initInputTable(data);
+    }
+
+    function resetInputTable() {
+        $("#grid").empty();
     }
 </script>

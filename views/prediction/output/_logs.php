@@ -13,8 +13,45 @@
 </div>
 
 <script>
-    function addLog(text, color) {
-        let style = color ? "class='text-" + color + "'" : "";
-        $("#logs-modal .modal-body").prepend("<hr>").prepend("<p " + style + ">" + getCurrentTime() + " - " + text + "</p>");
+    function addLog(text, color = "gray", bold = false) {
+        let content = getCurrentTime() + " - " + text;
+        let log = $("<p>" + content + "</p>");
+        if (color) log.addClass("text-" + color);
+        if (bold) log.addClass("bold");
+        $("#logs-modal .modal-body").append(log).append("<hr>");
+
+        launch.logs.push(content);
+    }
+
+    function resetLogs() {
+        $("#logs-modal .modal-body").empty();
+        launch.logs = [];
+    }
+
+    function makeLaunchLogsFile(directory) {
+        addLog("Création du fichier de logs...", "black");
+
+        $.ajax({
+            type: "POST",
+            url: "data/controller.php?action=LAUNCH_LOGS_FILE&directory=" + directory,
+            data: JSON.stringify(launch.logs),
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            success: function(response) {
+                addLog("Fichier de logs créé avec succès !", "green");
+            },
+
+            error: function(jqXHR, textStatus, errorThrown) {
+                addLog("Erreur de création du fichier de logs !", "red");
+
+                if (textStatus == 'timeout')
+                    addLog("Controller data ne répond pas", "red");
+
+                if (textStatus == 'error')
+                    addLog(errorThrown, "red");
+            }
+        });
     }
 </script>

@@ -74,3 +74,24 @@ function getCurrentTime() {
   timeString += (seconds < 10 ? ":0" : ":") + seconds;
   return timeString;
 }
+
+function CSVToJSON(str) {
+  let obj = {
+    headers: [],
+    values: [],
+  };
+  let delimiter = ";";
+  const headers = str.slice(0, str.indexOf("\n")).split(delimiter);
+  obj.headers = headers;
+
+  const rows = str.slice(str.indexOf("\n") + 1).split("\n");
+  obj.values = rows.map((row) => {
+    const values = row.split(delimiter);
+    return headers.reduce(
+      (object, curr, i) => ((object[curr] = parseFloat(values[i])), object),
+      {}
+    );
+  });
+
+  return obj;
+}

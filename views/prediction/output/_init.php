@@ -1,73 +1,161 @@
-<button class="green" onclick="launchPrediction()">
-    <i class="fa fa-play"></i><span>Lancer les prédictions</span>
-</button>
+<script src="assets/libraries/json2csv/json2csv.umd.js"></script>
+
+<div id="launch-disabled">
+
+</div>
+
+<div id="launch-control" style="display:none">
+    <button class="green" onclick="launchPrediction()">
+        <i class="fa fa-play"></i><span>Lancer les prédictions</span>
+    </button>
+</div>
 
 <script>
-    function launchPrediction() {
+    let launch = {
+        directory: "",
+        logs: []
+    };
 
-        let filePath = "";
+    function enableLaunchPrediction() {
+        $("#launch-control").fadeIn();
+    }
+
+    function resetLaunch() {
+        launch.directory = "";
+
+        resetLogs();
+        resetOutput();
+    }
+
+    function launchPrediction() {
+        resetLaunch();
+
+        addLog("Prédiction lancée par l'utilisateur...", "black", true);
+
+        let data = $(input.data).map(function() {
+            return this.debit;
+        }).get();
+
+        let directory = makeInputFileCSV(data);
 
         $(".prediction-view").hide();
         $("#loading-view").fadeIn();
+    }
 
-        var request = $.get(api.url + "/launch?filePath=" + filePath);
+    function makeInputFileCSV(data) {
+        addLog("Création du fichier de données d'entrée (csv)...", "black");
 
-        request.done(function(launch) {
-            checkLaunchState(simulation_id, launch.id);
-            addLog("Nouveau lancement créé avec succès (id:" + launch.id + ")", "green");
-        });
+        $.ajax({
+            type: "POST",
+            url: "data/controller.php?action=LAUNCH_INPUT_CSV",
+            data: JSON.stringify(data),
+            headers: {
+                "Content-Type": "application/json"
+            },
 
-        request.fail(function(jqXHR, textStatus, errorThrown) {
-            addLog("La prédiction n'a pas pu être lancée", "red");
+            success: function(directory) {
+                addLog("Fichier de données d'entrée créé avec succès !", "green");
 
-            if (textStatus == 'timeout') {
-                addLog('Erreur de timeout : "The server is not responding"', "red");
+                launch.directory = JSON.parse(directory);
+                sendInputFileCSV(window.location.origin + window.location.pathname + launch.directory.path);
+            },
+
+            error: function(jqXHR, textStatus, errorThrown) {
+                addLog("Erreur de création du fichier de données d'entrée !", "red");
+
+                if (textStatus == 'timeout')
+                    addLog("-- Controller data ne répond pas", "red");
+
+                if (textStatus == 'error')
+                    addLog("--" + errorThrown, "red");
             }
-
-            if (textStatus == 'error') {
-                addLog('Erreur API : "' + errorThrown + '"', "red");
-            }
-
-            $(".prediction-view").hide();
-            $("#error-view").fadeIn();
         });
     }
 
-    function checkLaunchState(simulation_id, launch_id) {
+    function sendInputFileCSV(directory) {
+        addLog("Envoi des données d'entrée à l'API (IA)...", "black");
 
-        let loop = setInterval(() => {
+        $.ajax({
+            type: "POST",
+            url: api.url + "/launches",
+            data: JSON.stringify({
+                directory
+            }),
+            headers: {
+                "Content-Type": "application/json"
+            },
 
-            var request = $.get(api.url + "/simulations/" + simulation_id + "/launches/" + launch_id);
+            success: function() {
+                addLog("L'API (IA) a reçu les données d'entrée avec succès.", "green");
+                checkLaunchState(directory);
+            },
 
-            request.done(function(launch) {
-                addLog("Nouvelle vérification du lancement. Statut : " + launch.state, null);
-                if (launch.state != "done") return;
-                clearInterval(loop);
+            error: function(jqXHR, textStatus, errorThrown) {
+                addLog("L'API (IA) n'a pas pu recevoir les données d'entrée !", "red");
 
-                addLog("Données des résultats reçues avec succès", "green");
-                addLog("Péparation des graphiques des résultats", null);
-
-                $(".prediction-view").hide();
-                $("#results-view").fadeIn();
-
-                addLog("Lancement terminé avec succès.", "green");
-            });
-
-            request.fail(function(jqXHR, textStatus, errorThrown) {
-                addLog("Les résultats n'ont pas pu être générés", "red");
                 if (textStatus == 'timeout') {
-                    addLog('Erreur de timeout : "The server is not responding"', "red");
+                    addLog('-- [Erreur de timeout] : "The server is not responding"', "red");
                 }
 
                 if (textStatus == 'error') {
-                    addLog('Erreur API : "' + errorThrown + '"', "red");
+                    addLog('-- [Erreur API] : "' + errorThrown + '"', "red");
                 }
 
                 $(".prediction-view").hide();
                 $("#error-view").fadeIn();
+            }
+        });
+    }
+
+    function checkLaunchState(directory) {
+
+        addLog("Récupération des résultats de la prédiction...", "black");
+        _check();
+
+        let loop = setInterval(() => {
+            addLog("Nouvelle tentative de récupération des résultats...", "black");
+            _check();
+        }, sim_config.recheck_launch_state_interval);
+
+        function _check() {
+            var request = $.get(directory + "/output.csv");
+
+            request.done(function(data) {
+                clearInterval(loop);
+
+                addLog("Résultats de la prédiction récupérés avec succès !", "green");
+                addLog("Péparation des graphiques...", "black");
+
+                $(".prediction-view").hide();
+                $("#results-view").fadeIn();
+
+                initResultsData(CSVToJSON(data));
+                addLog("Lancement terminé avec succès !", "green", true);
+
+                makeLaunchLogsFile(launch.directory.name);
+            });
+
+            request.fail(function(jqXHR, textStatus, errorThrown) {
+                addLog("Les résultats ne sont pas encore disponibles.", "orange");
+
+                // if (textStatus == 'timeout') {
+                //     addLog('-- Erreur de timeout : " The server is not responding"', "red");
+                // }
+
+                // if (textStatus == 'error') {
+                //     addLog('-- Erreur API : "' + errorThrown + '"', "red");
+                // }
+            });
+
+            $("#cancelPrediction").on("click", function() {
                 clearInterval(loop);
             });
 
-        }, sim_config.recheck_launch_state_interval);
+        }
+    }
+
+    function cancelPrediction() {
+        $(".prediction-view").hide();
+        $("#init-view").fadeIn();
     }
 </script>

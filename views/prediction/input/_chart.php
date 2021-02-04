@@ -1,32 +1,28 @@
-<script src="assets/libraries/highcharts/highcharts.js"></script>
-<script src="assets/libraries/highcharts/draggable-points.js"></script>
-<script src="assets/libraries/highcharts/data.js"></script>
-<script src="assets/libraries/highcharts/series-label.js"></script>
-<script src="assets/libraries/highcharts/exporting.js"></script>
-<script src="assets/libraries/highcharts/export-data.js"></script>
-<script src="assets/libraries/highcharts/accessibility.js"></script>
-
-<script src="assets/libraries/highcharts/highslide-full.min.js"></script>
-<script src="assets/libraries/highcharts/highslide.config.js" charset="utf-8"></script>
-<link rel="stylesheet" type="text/css" href="assets/libraries/highcharts/highslide.css" />
-
 <figure class="highcharts-figure">
-    <div id="container"></div>
+    <div id="inputChart"></div>
 </figure>
 <script>
     function initInputChart(data) {
+        resetInputChart();
 
-        Highcharts.chart('container', {
+        var chartDiv = document.createElement('div');
+        chartDiv.className = 'chart';
+        document.getElementById('inputChart').appendChild(chartDiv);
+
+        input.chart = Highcharts.chart(chartDiv, {
 
             chart: {
                 scrollablePlotArea: {
                     minWidth: 700
                 },
+                spacingBottom: 50,
                 zoomType: 'x',
             },
 
             title: {
-                text: "Evolution du débit d'une vanne en fonction du temps"
+                text: "Débit",
+                align: 'left',
+                margin: 0,
             },
 
             subtitle: {
@@ -34,12 +30,16 @@
             },
 
             xAxis: {
+                crosshair: true,
+                events: {
+                    setExtremes: syncExtremes
+                },
                 categories: $(data).map(function() {
                     return this.time;
                 }).get()
             },
 
-            yAxis: [{ // left y axis
+            yAxis: [{
                 title: {
                     text: null
                 },
@@ -59,7 +59,7 @@
                 },
                 labels: {
                     align: 'right',
-                    x: -3,
+                    x: -10,
                     y: 16,
                     format: '{value:.,0f}'
                 },
@@ -67,14 +67,33 @@
             }],
 
             legend: {
-                align: 'left',
+                layout: 'horizontal',
+                align: 'right',
+                x: -100,
                 verticalAlign: 'top',
-                borderWidth: 0
+                y: 40,
+                floating: true,
+                backgroundColor: Highcharts.defaultOptions.legend.backgroundColor || // theme
+                    'rgba(255,255,255,0.25)'
             },
 
             tooltip: {
                 shared: true,
-                crosshairs: true
+                positioner: function() {
+                    return {
+                        // right aligned
+                        x: this.chart.chartWidth - this.label.width - 50,
+                        y: 0 // align to title
+                    };
+                },
+                borderWidth: 0,
+                backgroundColor: 'none',
+                pointFormat: '{point.y}',
+                headerFormat: '',
+                shadow: false,
+                style: {
+                    fontSize: '18px'
+                },
             },
 
             plotOptions: {
@@ -97,6 +116,9 @@
                                         this.y + ' sessions',
                                     width: 200
                                 });
+                            },
+                            drop: function(e) {
+                                updateInputData(getInputChartData(), "chart");
                             }
                         }
                     },
@@ -113,17 +135,46 @@
                 }
             },
 
+            exporting: {
+                buttons: {
+                    contextButton: {
+                        align: 'right',
+                        x: -10,
+                        y: -5,
+                    }
+                }
+            },
+
             series: [{
+                data: $(data).map(function() {
+                    return this.debit;
+                }).get(),
                 name: "Débit",
+                type: "line",
+                color: Highcharts.getOptions().colors[0],
+                fillOpacity: 0.3,
                 lineWidth: 1,
                 marker: {
                     radius: 4
                 },
-                data: $(data).map(function() {
-                    return this.debit;
-                }).get()
-
             }]
         });
+    }
+
+    function getInputChartData() {
+        return $(input.chart.series[0].data).map(function(i) {
+            return {
+                time: input.chart.axes[0].categories[i],
+                value: this.options.y
+            };
+        }).get();
+    }
+
+    function updateInputChart(data) {
+        initInputChart(data);
+    }
+
+    function resetInputChart() {
+        $("#inputChart").empty();
     }
 </script>

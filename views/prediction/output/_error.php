@@ -8,7 +8,7 @@
 <button class="green" onclick="launchPrediction()">
     <i class="fa fa-redo-alt"></i><span>Réessayer</span>
 </button>
-<button class="gray" onclick="cancelSim()">
+<button class="gray" onclick="cancelPrediction()" id="cancelPrediction">
     <i class="fa fa-stop-circle"></i><span>Annuler</span>
 </button>
 

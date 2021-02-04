@@ -5,7 +5,7 @@
 </div>
 
 <br>
-<button class="gray" onclick="cancelSim()">
+<button class="gray" onclick="cancelPrediction()" id="cancelPrediction">
     <i class="fa fa-stop-circle"></i><span>Annuler</span>
 </button>
 
@@ -15,7 +15,4 @@
 </button>
 
 <script>
-    function cancelSim(id) {
-        redirect('?view=simulation-setting&id=' + qp("id"));
-    }
 </script>

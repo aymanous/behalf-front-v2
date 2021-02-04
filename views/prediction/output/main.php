@@ -21,7 +21,10 @@
 </div>
 
 <script>
-    function cancelSim() {
+    function resetOutput() {
+
+        resetOutputResults();
+
         $(".prediction-view").hide();
         $("#init-view").fadeIn();
     }

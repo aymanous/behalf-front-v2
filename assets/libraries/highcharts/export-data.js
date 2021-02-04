@@ -298,6 +298,7 @@
         return l;
       };
       b.prototype.getCSV = function (a) {
+        console.log(a);
         var d = "",
           b = this.getDataRows(),
           c = this.options.exporting.csv,
@@ -438,6 +439,7 @@
       };
       b.prototype.downloadCSV = function () {
         var a = this.getCSV(!0);
+        console.log(this.getFilename());
         G(
           v(a, "text/csv") || "data:text/csv,\ufeff" + encodeURIComponent(a),
           this.getFilename() + ".csv"
