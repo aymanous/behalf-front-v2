@@ -2,12 +2,17 @@
     <div id="inputChart"></div>
 </figure>
 <script>
-    function initInputChart(data) {
+    function initInputChart() {
         resetInputChart();
 
         var chartDiv = document.createElement('div');
         chartDiv.className = 'chart';
         document.getElementById('inputChart').appendChild(chartDiv);
+
+        let time = input.headers[0];
+
+        let sensor = input.headers[1];
+        let parameter = getSensorParameter(sensor);
 
         input.chart = Highcharts.chart(chartDiv, {
 
@@ -20,7 +25,7 @@
             },
 
             title: {
-                text: "Débit",
+                text: parameter.label,
                 align: 'left',
                 margin: 0,
             },
@@ -34,67 +39,12 @@
                 events: {
                     setExtremes: syncExtremes
                 },
-                categories: $(data).map(function() {
-                    return this.time;
+                categories: $(input.values).map(function() {
+                    return parseFloat(this[time]);
                 }).get()
             },
 
-            yAxis: [{
-                title: {
-                    text: null
-                },
-                labels: {
-                    align: 'left',
-                    x: 3,
-                    y: 16,
-                    format: '{value:.,0f}'
-                },
-                showFirstLabel: false
-            }, { // right y axis
-                linkedTo: 0,
-                gridLineWidth: 0,
-                opposite: true,
-                title: {
-                    text: null
-                },
-                labels: {
-                    align: 'right',
-                    x: -10,
-                    y: 16,
-                    format: '{value:.,0f}'
-                },
-                showFirstLabel: false
-            }],
-
-            legend: {
-                layout: 'horizontal',
-                align: 'right',
-                x: -100,
-                verticalAlign: 'top',
-                y: 40,
-                floating: true,
-                backgroundColor: Highcharts.defaultOptions.legend.backgroundColor || // theme
-                    'rgba(255,255,255,0.25)'
-            },
-
-            tooltip: {
-                shared: true,
-                positioner: function() {
-                    return {
-                        // right aligned
-                        x: this.chart.chartWidth - this.label.width - 50,
-                        y: 0 // align to title
-                    };
-                },
-                borderWidth: 0,
-                backgroundColor: 'none',
-                pointFormat: '{point.y}',
-                headerFormat: '',
-                shadow: false,
-                style: {
-                    fontSize: '18px'
-                },
-            },
+            yAxis: chart_config.yAxis,
 
             plotOptions: {
                 series: {
@@ -135,21 +85,20 @@
                 }
             },
 
-            exporting: {
-                buttons: {
-                    contextButton: {
-                        align: 'right',
-                        x: -10,
-                        y: -5,
-                    }
-                }
+            credits: {
+                enabled: false
             },
 
+            legend: chart_config.legend,
+            lang: chart_config.lang,
+            exporting: _getChartExporting("input_" + parameter.key),
+            tooltip: _getChartTooltip(" " + parameter.unit),
+
             series: [{
-                data: $(data).map(function() {
-                    return this.debit;
+                data: $(input.values).map(function() {
+                    return parseFloat(this[sensor]);
                 }).get(),
-                name: "Débit",
+                name: parameter.sensor,
                 type: "line",
                 color: Highcharts.getOptions().colors[0],
                 fillOpacity: 0.3,
@@ -163,15 +112,19 @@
 
     function getInputChartData() {
         return $(input.chart.series[0].data).map(function(i) {
-            return {
-                time: input.chart.axes[0].categories[i],
-                value: this.options.y
-            };
+            let obj = {};
+            obj[input.headers[0]] = input.chart.axes[0].categories[i];
+            obj[input.headers[1]] = this.options.y;
+            return obj;
         }).get();
     }
 
-    function updateInputChart(data) {
-        initInputChart(data);
+    function updateInputChart() {
+        initInputChart();
+    }
+
+    function updateSingleInputChartValue(row, value) {
+        input.chart.series[0].data[row].update(value);
     }
 
     function resetInputChart() {

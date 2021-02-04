@@ -6,35 +6,51 @@
 <div id="grid"></div>
 
 <script>
-    function initInputTable(data) {
+    function initInputTable() {
+
         resetInputTable();
 
         input.table = jexcel(document.getElementById("grid"), {
-            tableOverflow: false,
-            lazyLoading: false,
-            loadingSpin: true,
-            search: true,
+            search: false,
             pagination: 100,
-            data: data,
+            data: input.values,
             columns: [{
                 type: 'numeric',
-                title: "Temps",
+                title: input.headers[0],
                 mask: '#.000000',
                 width: 80,
                 decimal: '.',
                 readOnly: false,
             }, {
                 type: 'numeric',
-                title: "Débit",
+                title: input.headers[1],
                 mask: '#.000000',
                 width: 80,
                 decimal: '.',
                 readOnly: false,
             }, ],
-            onchange: function() {
-                updateInputData(getInputTableData(), "table");
+            onchange: function(_, td) {
+                _updateSingleInputValue(td);
+            },
+            onundo: function() {
+                _updateInputData();
+            },
+            onredo: function() {
+                _updateInputData();
             },
         });
+
+        function _updateInputData() {
+            updateInputData(getInputTableData(), "table");
+        }
+
+        function _updateSingleInputValue(td) {
+            let params = {
+                row: parseFloat($(td).attr("data-y")),
+                value: parseFloat($(td).html()),
+            }
+            updateInputData(getInputTableData(), "table", params);
+        }
     }
 
     function getInputTableData() {
@@ -42,15 +58,15 @@
         let values = input.table.getColumnData(1);
 
         return $(values).map(function(i) {
-            return {
-                time: parseFloat(times[i]),
-                value: parseFloat(values[i])
-            };
+            let obj = {};
+            obj[input.headers[0]] = parseFloat(times[i]);
+            obj[input.headers[1]] = parseFloat(values[i]);
+            return obj;
         }).get();
     }
 
-    function updateInputTable(data) {
-        initInputTable(data);
+    function updateInputTable() {
+        initInputTable();
     }
 
     function resetInputTable() {

@@ -14,6 +14,7 @@
 <script src="assets/libraries/highcharts/highslide.config.js" charset="utf-8"></script>
 <script src="assets/libraries/highcharts/custom.js"></script>
 <script src="config/data.js"></script>
+<script src="config/charts.js"></script>
 
 <div id="prediction">
     <div class="row m-0">

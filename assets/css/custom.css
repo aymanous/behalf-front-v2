@@ -17,7 +17,20 @@ h6 {
 
 p {
   line-height: 1.5rem;
+  font-size: 1rem;
   margin: 0;
+}
+
+span {
+  font-size: 1rem;
+}
+
+a {
+  font-size: 1rem;
+}
+
+.text-black {
+  color: #000000 !important;
 }
 
 .text-blue {
@@ -43,12 +56,17 @@ p {
   font-weight: bold;
 }
 
+.uppercase {
+  text-transform: uppercase;
+}
+
 /* ----------------------------------------------------------- */
 /* Modals */
 
 .modal-title {
-  font-weight: bold;
+  font-size: 1.25rem;
   color: #214c7f;
+  text-transform: uppercase;
 }
 
 .modal-content {
@@ -57,6 +75,11 @@ p {
 
 .modal-header {
   padding: 0 0 0.5rem 0;
+  margin-bottom: 0.5rem;
+}
+
+.modal-header button.close span {
+  font-size: inherit;
 }
 
 .modal-body {
@@ -65,6 +88,12 @@ p {
 
 .modal-footer {
   padding: 0.5rem 0 0 0;
+}
+
+/* Positions */
+
+.flex {
+  display: flex;
 }
 
 /* ----------------------------------------------------------- */
@@ -88,7 +117,7 @@ button:focus {
 button {
   border: 0;
   border-radius: 2px;
-  padding: 0.4rem 1rem;
+  padding: 0.3rem 1rem;
 }
 
 button:hover {
@@ -96,7 +125,7 @@ button:hover {
 }
 
 button i {
-  font-size: 0.95rem;
+  font-size: 0.8rem;
 }
 button span {
   margin: 0 0.5rem;
@@ -168,4 +197,18 @@ button.transparent {
 
 .jexcel > thead > tr > td {
   top: -1.6rem;
+}
+
+/* Highcharts */
+
+.chart {
+  height: 450px;
+  margin-top: 2rem;
+}
+
+.highcharts-figure {
+  width: -webkit-fill-available;
+  min-width: inherit;
+  max-width: inherit;
+  margin: inherit;
 }

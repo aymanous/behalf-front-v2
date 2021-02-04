@@ -1,11 +1,12 @@
 <div class="header">
     <div class="row">
-        <div class="col-lg-3">
-            <h4>Résultats</h4>
+        <div class="col-lg-5 text-blue uppercase" style="display: flex;">
+            <h5>PRÉDICTION #</h5>
+            <h5 class="launch-id"></h5>
         </div>
-        <div class="col-lg-9 text-right">
+        <div class="col-lg-7 text-right" style="margin-top: -0.5rem;">
             <button class="gray" data-toggle="modal" data-target="#model-modal">
-                <i class="fa fa-project-diagram"></i><span>Système fluidique étudié</span>
+                <i class="fa fa-project-diagram"></i><span>Système</span>
             </button>
             <button class="gray" data-toggle="modal" data-target="#logs-modal">
                 <i class="fa fa-list-ul"></i><span>Logs</span>
@@ -21,7 +22,7 @@
     <div class="modal-dialog" role="document" style="max-width: 950px; margin: 1em auto;">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title text-blue">Système fluidique étudié</h5>
+                <h5 class="modal-title">Système fluidique étudié</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -41,9 +42,9 @@
     function initResultsData(data) {
         let color = 1;
         let datasets = [];
-        $.each(data.headers, function(_, header) {
+        $.each(getOutputSensorsList(), function(_, sensor) {
 
-            let parameter = getSensorParameter(header);
+            let parameter = getSensorParameter(sensor);
 
             let indice = null;
             $.each(datasets, function(i, dataset) {
@@ -65,9 +66,9 @@
 
             datasets[indice].series.push({
                 data: $(data.values).map(function() {
-                    return this[header];
+                    return this[sensor];
                 }).get(),
-                name: header,
+                name: sensor,
                 type: "line",
                 color: Highcharts.getOptions().colors[color++],
                 fillOpacity: 0.3,
@@ -105,19 +106,7 @@
                     align: 'left',
                     margin: 0,
                 },
-                credits: {
-                    enabled: false
-                },
-                legend: {
-                    layout: 'horizontal',
-                    align: 'right',
-                    x: -100,
-                    verticalAlign: 'top',
-                    y: 40,
-                    floating: true,
-                    backgroundColor: Highcharts.defaultOptions.legend.backgroundColor || // theme
-                        'rgba(255,255,255,0.25)'
-                },
+
                 xAxis: {
                     crosshair: true,
                     events: {
@@ -126,63 +115,20 @@
                     labels: {
                         format: '{value}'
                     },
-                    categories: $(input.data).map(function() {
+                    categories: $(input.values).map(function() {
                         return this.time;
                     }).get()
                 },
-                yAxis: [{
-                    title: {
-                        text: null
-                    },
-                    labels: {
-                        align: 'left',
-                        x: 3,
-                        y: 16,
-                        format: '{value:.,0f}'
-                    },
-                    showFirstLabel: false
-                }, { // right y axis
-                    linkedTo: 0,
-                    gridLineWidth: 0,
-                    opposite: true,
-                    title: {
-                        text: null
-                    },
-                    labels: {
-                        align: 'right',
-                        x: -10,
-                        y: 16,
-                        format: '{value:.,0f}'
-                    },
-                    showFirstLabel: false
-                }],
-                tooltip: {
-                    shared: true,
-                    positioner: function() {
-                        return {
-                            // right aligned
-                            x: this.chart.chartWidth - this.label.width - 50,
-                            y: 0 // align to title
-                        };
-                    },
-                    borderWidth: 0,
-                    backgroundColor: 'none',
-                    pointFormat: '{point.y}',
-                    headerFormat: '',
-                    shadow: false,
-                    style: {
-                        fontSize: '18px'
-                    },
+                yAxis: chart_config.yAxis,
+
+                credits: {
+                    enabled: false
                 },
-                exporting: {
-                    buttons: {
-                        contextButton: {
-                            align: 'right',
-                            x: -10,
-                            y: -5,
-                        }
-                    }
-                },
+                legend: chart_config.legend,
+                lang: chart_config.lang,
+                exporting: _getChartExporting(launch.directory.name + "output_" + dataset.parameter),
+                tooltip: chart_config.tooltip,
+                
                 series: dataset.series
             });
         });

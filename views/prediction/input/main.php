@@ -2,11 +2,19 @@
 
 <div class="header">
     <div class="row">
-        <div class="col-lg-6">
-            <h4>Données d'entrée</h4>
+        <div class="col-lg-4 text-blue uppercase" style="display: flex;">
+            <h5 class="text-blue">Données d'entrée</h5>
         </div>
-        <div class="col-lg-6 text-right">
-            <a href="data/assets/entries_format_reference.csv">Télécharger le format de référence</a>
+        <div class="col-lg-8 text-right" style="margin-top: -0.5rem;">
+            <button class="gray">
+                <a class="text-black" href="data/assets/entries_format_reference.csv">
+                    <i class="fa fa-download"></i>
+                    <span>Format de référence</span>
+                </a>
+            </button>
+            <button class="blue" data-toggle="modal" data-target="#import-modal">
+                <i class="fa fa-file-import"></i><span>Importer un dataset</span>
+            </button>
         </div>
     </div>
 </div>
@@ -29,7 +37,8 @@
 <script src="assets/libraries/SheetJS/spin.js"></script>
 <script>
     let input = {
-        data: {}
+        headers: [],
+        values: {}
     };
 
     var _target = document.getElementById("dropzone");
@@ -37,14 +46,18 @@
     var spinner;
 
     var _onsheet = function(data, sheetnames, select_sheet_cb) {
-        input.data = data;
+        input.values = data;
+        input.headers = Object.keys(data[0]);
+        console.log(input.headers);
 
-        initInputChart(data);
-        initInputTable(data);
+        initInputChart();
+        initInputTable();
 
         resetImport();
         resetOutput();
         enableLaunchPrediction();
+
+        $('#import-modal').modal('toggle');
     };
 
     var _workstart = function() {
@@ -107,21 +120,24 @@
     });
 
 
-    function updateInputData(data, source) {
-        input.data = data;
+    function updateInputData(data, source, params = null) {
+        input.values = data;
 
         switch (source) {
             case "chart":
-                updateInputTable(input.data);
+                updateInputTable();
                 break;
 
             case "table":
-                // updateInputChart(input.data);
+                if (params == null) updateInputChart();
+                else updateSingleInputChartValue(params.row, params.value);
+
                 break;
 
             default:
-                updateInputTable(input.data);
-                updateInputChart(input.data);
+                updateInputTable();
+                if (params == null) updateInputChart();
+                else updateSingleInputChartValue(params.row, params.value);
         }
     }
 

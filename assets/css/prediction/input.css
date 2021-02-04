@@ -9,10 +9,12 @@
   width: 100% !important;
 }
 
-#dropzone {
-  border: dashed 2px #eee;
-  padding: 1rem 2rem;
+#dropzone #drop input {
+  border: dashed 2px #9f9f9f;
+  padding: 2rem;
   background: #f9f9f9;
+  width: -webkit-fill-available;
+  margin-bottom: 0.5rem;
 }
 
 #chart-core {

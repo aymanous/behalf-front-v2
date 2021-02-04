@@ -80,8 +80,10 @@ function CSVToJSON(str) {
     headers: [],
     values: [],
   };
-  let delimiter = ";";
-  const headers = str.slice(0, str.indexOf("\n")).split(delimiter);
+
+  let delimiter = ",";
+  // const headers = str.slice(0, str.indexOf("\n")).split(delimiter);
+  let headers = getOutputSensorsList();
   obj.headers = headers;
 
   const rows = str.slice(str.indexOf("\n") + 1).split("\n");

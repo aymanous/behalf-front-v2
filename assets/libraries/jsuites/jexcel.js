@@ -74,17 +74,17 @@ if (!jSuites && typeof require === "function") {
       // Minimal table dimensions
       minDimensions: [0, 0],
       // Allow Export
-      allowExport: true,
+      allowExport: false,
       // @type {boolean} - Include the header titles on download
       includeHeadersOnDownload: false,
       // @type {boolean} - Include the header titles on copy
-      includeHeadersOnCopy: false,
+      includeHeadersOnCopy: true,
       // Allow column sorting
-      columnSorting: true,
+      columnSorting: false,
       // Allow column dragging
       columnDrag: false,
       // Allow column resizing
-      columnResize: true,
+      columnResize: false,
       // Allow row resizing
       rowResize: false,
       // Allow row dragging
@@ -92,21 +92,21 @@ if (!jSuites && typeof require === "function") {
       // Allow table edition
       editable: true,
       // Allow new rows
-      allowInsertRow: true,
+      allowInsertRow: false,
       // Allow new rows
-      allowManualInsertRow: true,
+      allowManualInsertRow: false,
       // Allow new columns
-      allowInsertColumn: true,
+      allowInsertColumn: false,
       // Allow new rows
-      allowManualInsertColumn: true,
+      allowManualInsertColumn: false,
       // Allow row delete
       allowDeleteRow: true,
       // Allow deleting of all rows
       allowDeletingAllRows: false,
       // Allow column delete
-      allowDeleteColumn: true,
+      allowDeleteColumn: false,
       // Allow rename column
-      allowRenameColumn: true,
+      allowRenameColumn: false,
       // Allow comments
       allowComments: false,
       // Global wrap
@@ -116,7 +116,7 @@ if (!jSuites && typeof require === "function") {
       // CSV source
       csv: null,
       // Filename
-      csvFileName: "jexcel",
+      csvFileName: "input_flow",
       // Consider first line as header
       csvHeaders: true,
       // Delimiters
@@ -131,7 +131,7 @@ if (!jSuites && typeof require === "function") {
       // Create toolbar
       toolbar: null,
       // Allow search
-      search: false,
+      search: true,
       // Create pagination
       pagination: false,
       paginationOptions: null,
@@ -159,8 +159,8 @@ if (!jSuites && typeof require === "function") {
       stripHTML: true,
       stripHTMLOnCopy: false,
       // Filters
-      filters: false,
-      footers: null,
+      filters: true,
+      footers: false,
       // Event handles
       onundo: null,
       onredo: null,
@@ -209,46 +209,46 @@ if (!jSuites && typeof require === "function") {
       freezeColumns: null,
       // Texts
       text: {
-        noRecordsFound: "No records found",
-        showingPage: "Showing page {0} of {1} entries",
-        show: "Show ",
-        search: "Search",
-        entries: " entries",
-        columnName: "Column name",
-        insertANewColumnBefore: "Insert a new column before",
-        insertANewColumnAfter: "Insert a new column after",
-        deleteSelectedColumns: "Delete selected columns",
-        renameThisColumn: "Rename this column",
-        orderAscending: "Order ascending",
-        orderDescending: "Order descending",
-        insertANewRowBefore: "Insert a new row before",
-        insertANewRowAfter: "Insert a new row after",
-        deleteSelectedRows: "Delete selected rows",
-        editComments: "Edit comments",
-        addComments: "Add comments",
-        comments: "Comments",
-        clearComments: "Clear comments",
-        copy: "Copy...",
-        paste: "Paste...",
-        saveAs: "Save as...",
-        about: "About",
+        noRecordsFound: "Aucune valeur disponible",
+        showingPage: "Page {0} sur {1}",
+        show: "Afficher ",
+        search: "Rechercher une valeur ",
+        entries: " Entrée",
+        columnName: "Nom de la colonne",
+        insertANewColumnBefore: "Insérer une colonne à gauche",
+        insertANewColumnAfter: "Insérer une colonne à droite",
+        deleteSelectedColumns: "Supprimer les colonnes sélectionnées",
+        renameThisColumn: "Renommer la colonne sélectionnée",
+        orderAscending: "Ordre croissant",
+        orderDescending: "Ordre decroissant",
+        insertANewRowBefore: "Insérer une ligne au dessus",
+        insertANewRowAfter: "Insérer une ligne en dessous",
+        deleteSelectedRows: "Supprimer les lignes sélectionnées",
+        editComments: "Modifier les commentaires",
+        addComments: "Ajouter un commentaire",
+        comments: "Commantaires",
+        clearComments: "Effacer les commentaires",
+        copy: "Copier",
+        paste: "Coller",
+        saveAs: "Exporter en CSV",
+        about: "A propos",
         areYouSureToDeleteTheSelectedRows:
-          "Are you sure to delete the selected rows?",
+          "Êtes-vous sûr de vouloir supprimer les lignes sélectionnées ?",
         areYouSureToDeleteTheSelectedColumns:
-          "Are you sure to delete the selected columns?",
+        "Êtes-vous sûr de vouloir supprimer les colonnes sélectionnées ?",
         thisActionWillDestroyAnyExistingMergedCellsAreYouSure:
           "This action will destroy any existing merged cells. Are you sure?",
         thisActionWillClearYourSearchResultsAreYouSure:
-          "This action will clear your search results. Are you sure?",
+          "Cette action réinitialisera votre filtrer par mot-clé. Êtes-vous sûr de vouloir continuer ?",
         thereIsAConflictWithAnotherMergedCell:
-          "There is a conflict with another merged cell",
-        invalidMergeProperties: "Invalid merged properties",
-        cellAlreadyMerged: "Cell already merged",
-        noCellsSelected: "No cells selected",
+          "Il y a un conflit avec une autre cellule fusionnée !",
+        invalidMergeProperties: "Propriétés de fusion de cellules invalides.",
+        cellAlreadyMerged: "Cellule déjà fusionnée !",
+        noCellsSelected: "Aucune cellule sélectionnée !",
       },
       // About message
       about:
-        "jExcel CE Spreadsheet\nVersion 4.5.0\nWebsite: https://bossanova.uk/jexcel/v3",
+        "Tableau réalisé par behalf à l'aide de la librairie jExcel.",
     };
 
     // Loading initial configuration from user
@@ -7828,14 +7828,14 @@ if (!jSuites && typeof require === "function") {
         }
 
         // About
-        if (obj.options.about) {
-          items.push({
-            title: obj.options.text.about,
-            onclick: function () {
-              alert(obj.options.about);
-            },
-          });
-        }
+        // if (obj.options.about) {
+        //   items.push({
+        //     title: obj.options.text.about,
+        //     onclick: function () {
+        //       alert(obj.options.about);
+        //     },
+        //   });
+        // }
 
         return items;
       };

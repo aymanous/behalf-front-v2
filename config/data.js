@@ -1,3 +1,12 @@
+let output_sensors_list = [
+  "YTR064",
+  "YTR063",
+  "YTR062",
+  "YTR061",
+  "YPR066",
+  "YPR064",
+];
+
 let component_sensors = {
   YTR061: "temperature",
   YTR062: "temperature",
@@ -54,4 +63,8 @@ function getSensorParameter(sensor) {
   };
 
   return parameters;
+}
+
+function getOutputSensorsList() {
+  return output_sensors_list;
 }

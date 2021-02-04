@@ -1,9 +1,5 @@
 <script src="assets/libraries/json2csv/json2csv.umd.js"></script>
 
-<div id="launch-disabled">
-
-</div>
-
 <div id="launch-control" style="display:none">
     <button class="green" onclick="launchPrediction()">
         <i class="fa fa-play"></i><span>Lancer les prédictions</span>
@@ -32,8 +28,8 @@
 
         addLog("Prédiction lancée par l'utilisateur...", "black", true);
 
-        let data = $(input.data).map(function() {
-            return this.debit;
+        let data = $(input.values).map(function() {
+            return this[input.headers[1]];
         }).get();
 
         let directory = makeInputFileCSV(data);
@@ -54,9 +50,11 @@
             },
 
             success: function(directory) {
-                addLog("Fichier de données d'entrée créé avec succès !", "green");
 
                 launch.directory = JSON.parse(directory);
+                initLaunchId(launch.directory.name);
+
+                addLog("Fichier de données d'entrée créé avec succès (" + launch.directory.name + ") !", "green");
                 sendInputFileCSV(window.location.origin + window.location.pathname + launch.directory.path);
             },
 
@@ -75,12 +73,12 @@
     function sendInputFileCSV(directory) {
         addLog("Envoi des données d'entrée à l'API (IA)...", "black");
 
+        let dir = "/mnt/c/wamp64/www/ECL/PFE-simu/front/data/launches/" + launch.directory.name;
+        // let dir = "/www/behalf/simulator/v2/front/data/launches/" + launch.directory.name;
         $.ajax({
             type: "POST",
-            url: api.url + "/launches",
-            data: JSON.stringify({
-                directory
-            }),
+            url: api.url + "/predict",
+            data: JSON.stringify(dir),
             headers: {
                 "Content-Type": "application/json"
             },
@@ -152,6 +150,10 @@
             });
 
         }
+    }
+
+    function initLaunchId(directory) {
+        $(".launch-id").html(directory);
     }
 
     function cancelPrediction() {

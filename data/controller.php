@@ -7,9 +7,9 @@ switch (qp("action")) {
     case 'LAUNCH_INPUT_CSV':
 
         $date = new DateTime();
-        $directory = $date->getTimestamp() . "/";
+        $directory = $date->getTimestamp();
 
-        $route = "launches/" . $directory;
+        $route = "launches/" . $directory . "/";
         mkdir($route, 0700);
 
         $fp = fopen($route . "input.csv", "w");
@@ -18,9 +18,9 @@ switch (qp("action")) {
         }
         fclose($fp);
 
-        if (!copy("launches/output_sandbox.csv", $route . "output.csv")) {
-            echo "failed to copy $file...\n";
-        }
+        // if (!copy("launches/output_sandbox.csv", $route . "output.csv")) {
+        //     echo "failed to copy $file...\n";
+        // }
 
         $response = (object)[
             "path" => "data/launches/" . $directory,
@@ -35,7 +35,7 @@ switch (qp("action")) {
         if (!isset($data)) break;
 
         $directory = qp("directory");
-        $route = "launches/" . $directory;
+        $route = "launches/" . $directory . "/";
 
         $fp = fopen($route . "logs.txt", "w");
         foreach ($data as $row) {

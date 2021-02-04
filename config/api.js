@@ -1,9 +1,9 @@
 let api = {
-  url: "https://6011a66791905e0017be55c8.mockapi.io",
-  // url: "https://google.com",
+  url: "http://localhost:3000",
+  // url: "data/controller.php",
   token: "",
 };
 
 let sim_config = {
-  recheck_launch_state_interval : 1000,
-}
+  recheck_launch_state_interval: 3000,
+};
